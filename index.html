@@ -1,19 +1,32 @@
-<script id="env-config" type="application/json">
-{
-  "VITE_GOOGLE_SCRIPT_URL": "https://script.google.com/macros/s/AKfycbyp8XU8WH6GUsubXkdjAsD01I1zqJ-vy9sk4OBhe5JD_XXDKb94Ttx7X-JyZ5eep-64DA/exec",
-  "VITE_SAMPLE_SHEET_ID": "10L_ji8OziXIVSZ1ud8JZomL72NeuVpyRh06Qx1oicWM"
-}
-</script>
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>chamba-portal</title>
+    <title>Chamba Sports Meet — Registration Portal</title>
+
+    <!-- Runtime env injection: either set window.__ENV here, or use <script id="env-config"> JSON -->
+    <!-- Option A: JSON block (preferred if you want to edit values in HTML) -->
+    <script id="env-config" type="application/json">
+    {
+      "VITE_GOOGLE_SCRIPT_URL": "/api/proxy",
+      "VITE_SAMPLE_SHEET_ID": "10L_ji8OziXIVSZ1ud8JZomL72NeuVpyRh06Qx1oicWM"
+    }
+    </script>
+
+    <!-- Option B (alternative): directly set window.__ENV via script
+         Uncomment and edit the following block if you prefer this style.
+    <script>
+      window.__ENV = {
+        VITE_GOOGLE_SCRIPT_URL: "/api/proxy",
+        VITE_SAMPLE_SHEET_ID: "YOUR_SHEET_ID_HERE"
+      };
+    </script>
+    -->
   </head>
   <body>
     <div id="root"></div>
+    <!-- Vite will inject scripts here during dev/build -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
