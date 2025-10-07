@@ -37,9 +37,44 @@ const ADMIN_CREDENTIALS = [
   { username: 'admin3', password: 'Chamba@Admin3' }
 ];
 
-const GOOGLE_SCRIPT_URL = (typeof window !== 'undefined' && (window.__ENV && window.__ENV.VITE_GOOGLE_SCRIPT_URL)) ? window.__ENV.VITE_GOOGLE_SCRIPT_URL
-  : (typeof import !== 'undefined' && import.meta && import.meta.env && import.meta.env.VITE_GOOGLE_SCRIPT_URL) ? import.meta.env.VITE_GOOGLE_SCRIPT_URL
-  : '/api/proxy'; // fallback to proxy relative path
+// --- Safe runtime env lookup (no import.meta use) ---
+function getRuntimeEnvVar(name) {
+  try {
+    // 1) runtime injection object (recommended)
+    if (typeof globalThis !== 'undefined' && globalThis.__ENV && globalThis.__ENV[name]) return globalThis.__ENV[name];
+
+    // 2) <script id="env-config"> JSON block in index.html
+    if (typeof document !== 'undefined') {
+      const el = document.getElementById('env-config');
+      if (el && el.textContent) {
+        try {
+          const parsed = JSON.parse(el.textContent);
+          if (parsed && parsed[name]) return parsed[name];
+        } catch (err) { /* ignore parse errors */ }
+      }
+    }
+
+    // 3) global variable (host injected)
+    if (typeof globalThis !== 'undefined' && globalThis[name]) return globalThis[name];
+
+    // 4) process.env for build-time environments
+    if (typeof process !== 'undefined' && process.env) {
+      if (process.env[name]) return process.env[name];
+      const alt = name.replace(/^VITE_/, 'REACT_APP_');
+      if (process.env[alt]) return process.env[alt];
+    }
+  } catch (err) {
+    // ignore
+  }
+  return undefined;
+}
+
+const GOOGLE_SCRIPT_URL =
+  getRuntimeEnvVar('VITE_GOOGLE_SCRIPT_URL') ||
+  getRuntimeEnvVar('REACT_APP_GOOGLE_SCRIPT_URL') ||
+  '/api/proxy'; // fallback
+// ----------------------------------------------------
+
 
 function computeAgeClass(gender, age) {
   const g = (gender || '').toLowerCase();
